@@ -8,7 +8,7 @@ echo "Hello world!<br>";
 echo "I'm about to learn PHP!<br>";
 echo "This ", "string ", "was ", "made ", "with multiple parameters.";
 //keerrv
-echo "O lakos einai to skulaki mou!!<br>";
+echo "O leftris einai to skulaki mou!!<br>";
 ?> 
 
 </body>
