@@ -1,16 +1,20 @@
+<?php
+include_once 'db_connect.php';
+session_start();
+header("Content-Type: text/html; charset=utf-8");
+?>
+
 <!DOCTYPE html>
 <html>
 <body>
 
+
 <?php
-echo "<h2>PHP is Fun!</h2>";
-echo "Hello world!<br>"; 
+echo "<h1>PHP is Fun!</h1>";
+echo "Hello world!<br>";
 echo "I'm about to learn PHP!<br>";
 echo "This ", "string ", "was ", "made ", "with multiple parameters.";
-//keerrv
-echo "O leftris einai to skulaki mou!!<br>";
 ?> 
 
 </body>
 </html>
-
