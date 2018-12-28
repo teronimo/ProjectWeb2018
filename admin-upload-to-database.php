@@ -1,11 +1,13 @@
 <?php
+function upload($name){
 include_once 'db_connect.php';
 session_start();
 header("Content-Type: text/html; charset=utf-8");
 
 
 
-$myKml = "geonode-population_data_per_block.kml";
+//$myKml = "geonode-population_data_per_block.kml";
+$myKml = $name;
 $xml = simplexml_load_file($myKml);
 
 $placemarks = $xml->Document->Folder->Placemark;
@@ -27,4 +29,5 @@ for ($i = 0; $i < sizeof($placemarks); $i++)
     //$f_d = str_replace('"', '', str_replace(']', '', str_replace('[', '', $cor_d)));	
 }
 
-mysqli_close($con);?>
+mysqli_close($con);}
+?>
