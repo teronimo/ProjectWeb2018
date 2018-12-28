@@ -3,15 +3,13 @@ include_once 'db_connect.php';
 session_start();
 header("Content-Type: text/html; charset=utf-8");
 
+
+
 $myKml = "geonode-population_data_per_block.kml";
 $xml = simplexml_load_file($myKml);
 
 $placemarks = $xml->Document->Folder->Placemark;
 
-$query = '';
-$run = '';
-$coordinates1 = '';
-$cor_d1 = '';
 for ($i = 0; $i < sizeof($placemarks); $i++)
 {
 	$coordinates = $placemarks[$i]->name;
