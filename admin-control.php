@@ -26,9 +26,21 @@
         <div id="sidebar-wrapper">
             <ul class="sidebar-nav">
                 <li>
-                    <a href="admin-database-options.php">Επιλογές Βάσης Δεδομένων</a>
-                </li>
-                <li>
+                    <a href="#">Διαχείρηση Βάσης Δεδομένων</a>
+					<ul id="submenu">
+						<li>
+							<a href="admin-file-upload.php">Φόρτωση Αρχείου kml</a>
+						</li>
+						<li>
+							<a href="#">Διαγραφή Βάσης</a>
+							<?php
+								include_once 'db_connect.php';
+								$con->query("DELETE FROM map");
+							?> 
+						</li>
+					</ul>
+				</li>
+				<li>
                     <a href="#">Απεικόνιση Στοιχείων Πόλης</a>
                 </li>
                 <li>
