@@ -26,7 +26,7 @@
         <div id="sidebar-wrapper">
             <ul class="sidebar-nav">
                 <li>
-                    <a href="admin-database-options.php">Επιλογές Βάσης Δεδομένων</a>
+                    <a href="admin-database-options.php">Διαχείριση Βάσης Δεδομένων</a>
                 </li>
                 <li>
                     <a href="#">Απεικόνιση Στοιχείων Πόλης</a>

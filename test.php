@@ -8,10 +8,10 @@
 	  $tmp = explode('.',$_FILES['kml']['name']);
 	  $file_ext = strtolower(end($tmp));
       
-      $expensions= array("kml","xml","jpg");
+      $expensions= array("kml","xml");
       
       if(in_array($file_ext,$expensions)=== false){
-         $errors[]="extension not allowed, please choose a JPEG or PNG file.";
+         $errors[]="extension not allowed, please choose KML file.";
       }
            
       if(empty($errors)==true){
