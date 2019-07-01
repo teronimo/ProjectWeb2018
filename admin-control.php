@@ -25,12 +25,6 @@
         <!-- Sidebar -->
         <div id="sidebar-wrapper">
             <ul class="sidebar-nav">
-                <li>
-                    <a href="admin-database-options.php">Διαχείριση Βάσης Δεδομένων</a>
-                </li>
-                <li>
-                    <a href="#">Διαχείρηση Βάσης Δεδομένων</a>
-					<ul id="submenu">
                 <li class="dropdown">
                     <a class="dropdown-toggle" data-toggle="dropdown" href="#">Διαχείρηση Βάσης Δεδομένων <span class="carret"></span> </a>                 
 					<ul class="dropdown-menu dropdown-menu-right">
@@ -38,21 +32,12 @@
 							<a href="admin-file-upload.php">Φόρτωση Αρχείου kml</a>
 						</li>
 						<li>
-							<a href="#">Διαγραφή Βάσης</a>
-							<?php
-								include_once 'db_connect.php';
-								$con->query("DELETE FROM map");
-								$con->query("ALTER TABLE map AUTO_INCREMENT = 1");
-								$con->query("DELETE FROM map")
-							?> 
+							<a href="delete-database.php">Διαγραφή Βάσης</a>
 						</li>
 					</ul>
 				</li>
-				<li> 
-                    <a href="#">Απεικόνιση Στοιχείων Πόλης</a>
-                </li>
-                <li>
-                    <a href="#">Διαχείριση Οικοδομικών Τετραγώνων</a>
+				<li>
+                    <a href="map-admin.php">Απεικόνιση Στοιχείων Πόλης</a>
                 </li>
                 <li>
                     <a href="#">Εκτέλεση Εξομοίωσης</a>
@@ -65,7 +50,7 @@
         <div id="page-content-wrapper">
             <div class="container-fluid">
                 <h1>Welcome Back Admin</h1>
-                <a href="#menu-toggle" class="btn btn-secondary" id="menu-toggle">Toggle Menu</a>
+                <a href="#menu-toggle" class="btn btn-secondary" id="menu-toggle">Δες τις επιλογές σου!</a>
             </div>
         </div>
         <!-- /#page-content-wrapper -->
@@ -79,12 +64,11 @@
 
     <!-- Menu Toggle Script -->
     <script>
-    $("#menu-toggle").click(function(e) {
+    $("#menu-toggle").click(function(e)
+    {
         e.preventDefault();
         $("#wrapper").toggleClass("toggled");
     });
     </script>
 
 </body>
-
-</html

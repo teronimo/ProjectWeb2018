@@ -20,6 +20,8 @@ include_once 'admin-upload-to-database.php';
          move_uploaded_file($file_tmp,"kml-upload/".$file_name);
 		 upload($file_name);
          echo "Success";
+   		header("Location: admin-control.php");
+
       }else{
          print_r($errors);
       }

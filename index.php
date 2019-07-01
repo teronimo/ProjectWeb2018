@@ -39,8 +39,12 @@ session_start();
 
 	    </form>
 	    </div>
+	    <div>
+	    	<form id="LoginAsGuest" method="POST" action="guest-control.php">
+	        	<button type="submit" class="btn btn-primary">Login As Guest</button>
+			</form>
+	    </div>
 	</div></div></div>
 
 
 </body>
-</html>
