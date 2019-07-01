@@ -8,7 +8,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>Simple Sidebar - Start Bootstrap Template</title>
+    <title>Project Web 2018</title>
 
     <!-- Bootstrap core CSS -->
     <link href="css/bootstrap.min.css" rel="stylesheet">
@@ -26,13 +26,14 @@
         <div id="sidebar-wrapper">
             <ul class="sidebar-nav">
                 <li>
-<<<<<<< HEAD
                     <a href="admin-database-options.php">Διαχείριση Βάσης Δεδομένων</a>
                 </li>
                 <li>
-=======
                     <a href="#">Διαχείρηση Βάσης Δεδομένων</a>
 					<ul id="submenu">
+                <li class="dropdown">
+                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">Διαχείρηση Βάσης Δεδομένων <span class="carret"></span> </a>                 
+					<ul class="dropdown-menu dropdown-menu-right">
 						<li>
 							<a href="admin-file-upload.php">Φόρτωση Αρχείου kml</a>
 						</li>
@@ -41,12 +42,13 @@
 							<?php
 								include_once 'db_connect.php';
 								$con->query("DELETE FROM map");
+								$con->query("ALTER TABLE map AUTO_INCREMENT = 1");
+								$con->query("DELETE FROM map")
 							?> 
 						</li>
 					</ul>
 				</li>
-				<li>
->>>>>>> 3fbcb0125013f9dc576f0bc4fb69d874f1a7bb2c
+				<li> 
                     <a href="#">Απεικόνιση Στοιχείων Πόλης</a>
                 </li>
                 <li>

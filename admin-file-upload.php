@@ -12,11 +12,8 @@ include_once 'admin-upload-to-database.php';
       $expensions= array("kml","xml");
       
       if(in_array($file_ext,$expensions)=== false){
-<<<<<<< HEAD:test.php
          $errors[]="extension not allowed, please choose KML file.";
-=======
          $errors[]="extension not allowed, please choose a kml or xml file.";
->>>>>>> 3fbcb0125013f9dc576f0bc4fb69d874f1a7bb2c:admin-file-upload.php
       }
            
       if(empty($errors)==true){
