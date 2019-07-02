@@ -14,7 +14,7 @@
 		 var osmUrl = 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
 		 osmAttrib = 'Map data &copy; 2011 OpenStreetMap contributors',
 		 osm = new L.TileLayer(osmUrl, {maxZoom: 18, attribution: osmAttrib});
-		 map.setView(new L.LatLng(38.2462420, 21.7350847), 16).addLayer(osm);
+		 map.setView(new L.LatLng(22.9340045, 40.6430126), 16).addLayer(osm);
 		 var popup = new L.Popup();
 
 		<?php
@@ -31,12 +31,13 @@
 				    	polygonArray.push([<?php echo $row->coordinates ?>]);
 				    	<?php
 				    }				
-				} 
+				} 	
 		?>
 
 		console.log(polygonArray);
 		var poly = L.polygon(polygonArray, {color :"grey", fillColor: "grey"}).addTo(map);
-		poly.bindPopup('<p>Πληκτρολογίστε το πλήθος των διαθέσιμων θέσων στάθμευσης</p><form id="Park_Number" method="POST" action="" ><div class="form-group"><input type="text" class="form-control" name="Park_Number" placeholder="Park_Number"></div> <button type="submit" class="btn btn-primary">Submit</button></form>');
+		poly.bindPopup('<p>Πληκτρολογίστε το πλήθος των διαθέσιμων θέσων στάθμευσης, καθώς επίσης και την καμπύλη ζήτησής του τετραγώνου.</p><form id="Park_Number" method="POST" action="" enctype="multipart/form-data"><div class="form-group"><label>Number_of_parkings</label><input type="text" class="form-control" name="Park_Number" placeholder="Park_Number"><br /><label class="col-md-4 control-label">Choose CSV File</label> <input type="file" name="file" id="file" accept=".csv"></div><button type="submit" class="btn btn-primary">Submit</button></form>');
+
 		</script>
 	</body>
 </html>
