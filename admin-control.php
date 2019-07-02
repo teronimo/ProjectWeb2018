@@ -32,7 +32,7 @@
 							<a href="admin-file-upload.php">Φόρτωση Αρχείου kml</a>
 						</li>
 						<li>
-							<a href="delete-database.php">Διαγραφή Βάσης</a>
+							<a href="delete-database.php" onclick="return confirm('Θέλετε να γίνει διαγραφή της Βάσης Δεδομένων;')">Διαγραφή Βάσης</a>
 						</li>
 					</ul>
 				</li>
