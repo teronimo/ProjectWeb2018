@@ -36,8 +36,26 @@
 
 		console.log(polygonArray);
 		var poly = L.polygon(polygonArray, {color :"grey", fillColor: "grey"}).addTo(map);
-		poly.bindPopup('<p>Πληκτρολογίστε το πλήθος των διαθέσιμων θέσων στάθμευσης, καθώς επίσης και την καμπύλη ζήτησής του τετραγώνου.</p><form id="Park_Number" method="POST" action="" enctype="multipart/form-data"><div class="form-group"><label>Number_of_parkings</label><input type="text" class="form-control" name="Park_Number" placeholder="Park_Number"><br /><label class="col-md-4 control-label">Choose CSV File</label> <input type="file" name="file" id="file" accept=".csv"></div><button type="submit" class="btn btn-primary">Submit</button></form>');
 
+		poly.bindPopup('<p>Πληκτρολογίστε το πλήθος των διαθέσιμων θέσων στάθμευσης, καθώς επίσης και την καμπύλη ζήτησής του τετραγώνου.</p>'
+						+ '<form id="Park_Number" method="POST" action="park-csv-upload.php" enctype="multipart/form-data">'
+							+ '<div class="form-group">'
+									+ '<label>Polygon Name</label>'
+									+ '<input type="text" name="coordy" placeholder="Auto Complete" id="coordy"/>'
+									+ '<label>Number_of_parkings</label>'
+									+	'<input type="number" name="Park_Number" placeholder="Park_Number">' 
+									+	'<br />' 
+									+ '<label>Choose CSV File</label>'
+									+	'<input type="file" name="csvfile" id="csvfile" accept=".csv">'
+								+ '</div> <button name="upload" type="submit" class="btn btn-primary">Submit</button>'
+						+ '</form>');
+
+		poly.on('click', function(e){
+		  var coord = e.latlng;
+		  var lat = coord.lat;
+		  var lng = coord.lng;		  
+		  document.getElementById('coordy').value = poly.getBounds().getCenter() ;
+		});
 		</script>
 	</body>
 </html>
