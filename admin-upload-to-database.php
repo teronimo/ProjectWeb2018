@@ -10,9 +10,77 @@ function upload($name)
 
 	$placemarks = $xml->Document->Folder->Placemark;
 	$polygons = $xml->Document->Folder->Placemark->MultiGeometry->MultiGeometry;
+	
+	
+	////////////////////////////////////// prospa8ia gia population
+	$html = '		<ul class="textattributes">  
+						<li>
+							<strong>
+								<span class="atr-name">gid</span>:
+							</strong> 
+							<span class="atr-value">2725</span>
+						</li>
+						<li>
+							<strong>
+								<span class="atr-name">ESYE_CODE</span>:
+							</strong> 
+							<span class="atr-value">2377</span>
+						</li>
+						<li>
+							<strong>
+								<span class="atr-name">Population</span>:
+							</strong> 
+							<span class="atr-value">81</span>
+						</li>
+					</ul>
+	';
+		$doc = new DOMDocument();
+		$doc->loadHTML($html);
+		$liList = $doc->getElementsByTagName('li');
+		$liValues = array();
+		foreach ($liList as $li){
+			$liValues[] = $li->nodeValue;
+		}
+		//var_dump($liValues);  //ektiponi me ena periergo tropo ta stoixia tou description me tag li
+	//////////////////////////////////////////////
+	
 	for ($i = 0; $i < sizeof($placemarks); $i++)
 	{
 		$coordinates = $placemarks[$i]->name;
+		/////////////////////////////////// centroid
+		$cor_d  =  explode(' ', $placemarks[$i]->MultiGeometry->Polygon->outerBoundaryIs->LinearRing->coordinates);
+		$cor_lat = array();
+		$cor_long = array();
+		$qtmp_lat = array();
+		$qtmp_long = array();
+		$qtmp = array();
+		foreach($cor_d as $value){
+			$qtmp[]=$value;
+			$tmp = explode(',',$value);
+			$qtmp_lat[] = $tmp[0];
+			$qtmp_long[] = $tmp[1];
+		}
+		$sum_x = 0; //to a8roisma twn x 
+		$sum_y = 0; //to a8roisma twn y
+		 
+		$arrayLength = count($qtmp_lat);
+		$k = 0;
+		while ($k < $arrayLength){
+			$x = (float)$qtmp_lat[$k];
+			$y = (float)$qtmp_long[$k];
+			$sum_x = $sum_x + $x;
+			$sum_y = $sum_y + $y;		
+			$k = $k + 1;
+		}
+		$centoid_x = $sum_x / $arrayLength; // x gia to kentroides
+		$centoid_y = $sum_y / $arrayLength; // y gia to kentroides
+		$centroid = "$centoid_x"." , "."$centoid_y";
+		///////////////////////////////////		
+		
+		$population = $placemarks[$i]->description; 
+		echo $population; //ektipono olo to description (oli tin lista) gt den 3ero pos ginetai mono to population
+
+		
 		if (isset($placemarks[$i]->MultiGeometry->Polygon->outerBoundaryIs->LinearRing->coordinates))
 		{
 			$cor_p = '';
@@ -37,34 +105,42 @@ function upload($name)
 					$cor_p.= ','.'['.$tmp[0].','.$tmp[1].']';
 				}	
 			}
-			
-			$cx = 1;
-		    $cy = 0;
-
-		    for ($ri=0, $rl=sizeof($placemarks[$i]->MultiGeometry->Polygon->outerBoundaryIs->LinearRing->coordinates); $ri<$rl; $ri++) 
-		    {
-		        $ring = $placemarks[$i]->MultiGeometry->Polygon->outerBoundaryIs->LinearRing->coordinates[$ri];
-
-		        for ($vi=0, $vl=sizeof($ring); $vi<$vl; $vi++) 
-		        {
-		            $thisx = $ring[ $vi ][0];
-		            $thisy = $ring[ $vi ][1];
-		            $nextx = $ring[ ($vi+1) % $vl ][0];
-		            $nexty = $ring[ ($vi+1) % $vl ][1];
-
-		            $p = ($thisx * $nexty) - ($thisy * $nextx);
-		            $cx += ($thisx + $nextx) * $p;
-		            $cy += ($thisy + $nexty) * $p;
-		        }
-		    }
-		    $centroid = $cx.','.$cy;
-			//$centroid = getCentroidOfPolygon($placemarks[$i]->MultiGeometry->Polygon->outerBoundaryIs, $name);
 			$con->query("INSERT INTO map (name, coordinates, central) VALUES ('$coordinates', '$cor_p', '$centroid')");
 		}
 		for ($j = 0; $j < sizeof($polygons); $j++)
 		{
 			if (isset($polygons[$j]->Polygon->outerBoundaryIs->LinearRing->coordinates))
 			{
+				
+				$cor_d  =  explode(' ', $placemarks[$i]->MultiGeometry->Polygon->outerBoundaryIs->LinearRing->coordinates);
+				$cor_lat = array();
+				$cor_long = array();
+				$qtmp_lat = array();
+				$qtmp_long = array();
+				$qtmp = array();
+				foreach($cor_d as $value){
+					$qtmp[]=$value;
+					$tmp = explode(',',$value);
+					$qtmp_lat[] = $tmp[0];
+					$qtmp_long[] = $tmp[1];
+				}
+				$sum_x = 0; //to a8roisma twn x 
+				$sum_y = 0; //to a8roisma twn y
+				 
+				$arrayLength = count($qtmp_lat);
+				$k = 0;
+				while ($k < $arrayLength){
+					$x = (float)$qtmp_lat[$k];
+					$y = (float)$qtmp_long[$k];
+					$sum_x = $sum_x + $x;
+					$sum_y = $sum_y + $y;		
+					$k = $k + 1;
+				}
+				$centoid_x = $sum_x / $arrayLength; // x gia to kentroides
+				$centoid_y = $sum_y / $arrayLength; // y gia to kentroides
+				$centroid = "$centoid_x"." , "."$centoid_y";
+				
+				
 				$cor_p = '';
 				$l=0; //vlepo se poia x,y vriskomai gia na ta xorisw me komma
 				$cor_d = explode(' ', $polygons[$j]->Polygon->outerBoundaryIs->LinearRing->coordinates);
@@ -86,88 +162,12 @@ function upload($name)
 						$cor_p.= ','.'['.$tmp[0].','.$tmp[1].']';
 					}	
 				}
-
-				$cx = 0;
-			    $cy = 0;
-
-			    for ($ri=0, $rl=sizeof($polygons[$j]->Polygon->outerBoundaryIs->LinearRing->coordinates); $ri<$rl; $ri++) 
-			    {
-			        $ring = $polygons[$j]->Polygon->outerBoundaryIs->LinearRing->coordinates[$ri];
-
-			        for ($vi=0, $vl=sizeof($ring); $vi<$vl; $vi++) 
-			        {
-			            $thisx = $ring[ $vi ][0];
-			            $thisy = $ring[ $vi ][1];
-			            $nextx = $ring[ ($vi+1) % $vl ][0];
-			            $nexty = $ring[ ($vi+1) % $vl ][1];
-
-			            $p = ($thisx * $nexty) - ($thisy * $nextx);
-			            $cx += ($thisx + $nextx) * $p;
-			            $cy += ($thisy + $nexty) * $p;
-			        }
-			    }
-			    $centroid = $cx.','.$cy;
 				$con->query("INSERT INTO map (name, coordinates, central) VALUES ('$coordinates', '$cor_p', '$centroid')");
 			}
 		}
+
 	    //$f_d = str_replace('"', '', str_replace(']', '', str_replace('[', '', $cor_d)));	
 	}	
 	mysqli_close($con);
 }
-
-function getCentroidOfPolygon($geometry, $name) {
-	    $cx = 0;
-	    $cy = 0;
-	    $myKml = $name;
-		$xml = simplexml_load_file($myKml);
-
-	    for ($ri=0, $rl=sizeof($geometry->LinearRing); $ri<$rl; $ri++) 
-	    {
-	        $ring = $geometry->LinearRing[$ri];
-
-	        for ($vi=0, $vl=sizeof($ring); $vi<$vl; $vi++) 
-	        {
-	            $thisx = $ring[ $vi ][0];
-	            $thisy = $ring[ $vi ][1];
-	            $nextx = $ring[ ($vi+1) % $vl ][0];
-	            $nexty = $ring[ ($vi+1) % $vl ][1];
-
-	            $p = ($thisx * $nexty) - ($thisy * $nextx);
-	            $cx += ($thisx + $nextx) * $p;
-	            $cy += ($thisy + $nexty) * $p;
-	        }
-	    }
-
-	    // last step of centroid: divide by 6*A
-	    $area = $this->getAreaOfPolygon($geometry);
-	    $cx = -$cx / ( 6 * $area);
-	    $cy = -$cy / ( 6 * $area);
-
-	    // done!
-	    return array($cx,$cy);
-	}
-
-	function getAreaOfPolygon($geometry, $name) {
-	    $area = 0;
-	     $myKml = $name;
-		$xml = simplexml_load_file($myKml);
-
-	    for ($ri=0, $rl=sizeof($geometry->LinearRings); $ri<$rl; $ri++) 
-	    {
-	        $ring = $geometry->LinearRings[$ri];
-
-	        for ($vi=0, $vl=sizeof($ring); $vi<$vl; $vi++)
-	        {
-	            $thisx = $ring[ $vi ][0];
-	            $thisy = $ring[ $vi ][1];
-	            $nextx = $ring[ ($vi+1) % $vl ][0];
-	            $nexty = $ring[ ($vi+1) % $vl ][1];
-	            $area += ($thisx * $nexty) - ($thisy * $nextx);
-	        }
-	    }
-
-	    // done with the rings: "sign" the area and return it
-	    $area = abs(($area / 2));
-	    return $area;
-	}
 ?>
