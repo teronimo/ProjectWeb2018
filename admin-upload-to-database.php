@@ -4,45 +4,11 @@ function upload($name)
 	include_once 'db_connect.php';
 	session_start();
 	header("Content-Type: text/html; charset=utf-8");
-
 	$myKml = $name;
 	$xml = simplexml_load_file($myKml);
-
 	$placemarks = $xml->Document->Folder->Placemark;
 	$polygons = $xml->Document->Folder->Placemark->MultiGeometry->MultiGeometry;
 	
-	
-	////////////////////////////////////// prospa8ia gia population
-	$html = '		<ul class="textattributes">  
-						<li>
-							<strong>
-								<span class="atr-name">gid</span>:
-							</strong> 
-							<span class="atr-value">2725</span>
-						</li>
-						<li>
-							<strong>
-								<span class="atr-name">ESYE_CODE</span>:
-							</strong> 
-							<span class="atr-value">2377</span>
-						</li>
-						<li>
-							<strong>
-								<span class="atr-name">Population</span>:
-							</strong> 
-							<span class="atr-value">81</span>
-						</li>
-					</ul>
-	';
-		$doc = new DOMDocument();
-		$doc->loadHTML($html);
-		$liList = $doc->getElementsByTagName('li');
-		$liValues = array();
-		foreach ($liList as $li){
-			$liValues[] = $li->nodeValue;
-		}
-		//var_dump($liValues);  //ektiponi me ena periergo tropo ta stoixia tou description me tag li
-	//////////////////////////////////////////////
 	
 	for ($i = 0; $i < sizeof($placemarks); $i++)
 	{
@@ -77,10 +43,35 @@ function upload($name)
 		$centroid = "$centoid_x"." , "."$centoid_y";
 		///////////////////////////////////		
 		
-		$population = $placemarks[$i]->description; 
-		echo $population; //ektipono olo to description (oli tin lista) gt den 3ero pos ginetai mono to population
-
 		
+		$population = $placemarks[$i]->description;
+		?>
+		<script>
+			var descValuePop = 0;
+			var descValueGid = 0;
+			var descType = document.getElementsByClassName("atr-name")[<?php echo $i ?>].innerHTML;
+			console.log(descType);
+
+			if (descType=="Population")
+			{
+				var descValuePop = document.getElementsByClassName("atr-value")[<?php echo $i ?>].innerHTML;
+				console.log(descValuePop);
+			}
+			
+			if (descType=="gid")
+			{
+				var descValueGid = document.getElementsByClassName("atr-value")[<?php echo $i ?>].innerHTML;
+				console.log(descValueGid);
+			}
+
+		</script>
+
+		<?php
+		   $typePop = "<script>document.writeln(descType);</script>";
+		   $valuePop = "<script>document.writeln(descValuePop);</script>";
+		   $valueGid = "<script>document.writeln(descValueGid);</script>";
+		
+
 		if (isset($placemarks[$i]->MultiGeometry->Polygon->outerBoundaryIs->LinearRing->coordinates))
 		{
 			$cor_p = '';
@@ -105,10 +96,37 @@ function upload($name)
 					$cor_p.= ','.'['.$tmp[0].','.$tmp[1].']';
 				}	
 			}
-			$con->query("INSERT INTO map (name, coordinates, central) VALUES ('$coordinates', '$cor_p', '$centroid')");
+			$con->query("INSERT INTO map (name, coordinates, central, population) VALUES ('$coordinates', '$cor_p', '$centroid', '$population')");
 		}
 		for ($j = 0; $j < sizeof($polygons); $j++)
 		{
+			$population = $placemarks[$i]->description;
+			?>
+			<script>
+				var descValuePop = 0;
+				var descValueGid = 0;
+				var descType = document.getElementsByClassName("atr-name")[<?php echo $i ?>].innerHTML;
+				console.log(descType);
+
+				if (descType=="Population")
+				{
+					var descValuePop = document.getElementsByClassName("atr-value")[<?php echo $i ?>].innerHTML;
+					console.log(descValuePop);
+				}
+				
+				if (descType=="gid")
+				{
+					var descValueGid = document.getElementsByClassName("atr-value")[<?php echo $i ?>].innerHTML;
+					console.log(descValueGid);
+				}
+
+			</script>
+
+			<?php
+			   $typePop = "<script>document.writeln(descType);</script>";
+			   $valuePop = "<script>document.writeln(descValuePop);</script>";
+			   $valueGid = "<script>document.writeln(descValueGid);</script>";
+			   echo $typePop, " ", $valuePop, $valueGid;
 			if (isset($polygons[$j]->Polygon->outerBoundaryIs->LinearRing->coordinates))
 			{
 				
@@ -162,10 +180,9 @@ function upload($name)
 						$cor_p.= ','.'['.$tmp[0].','.$tmp[1].']';
 					}	
 				}
-				$con->query("INSERT INTO map (name, coordinates, central) VALUES ('$coordinates', '$cor_p', '$centroid')");
+			$con->query("INSERT INTO map (id, name, coordinates, central, population) VALUES ('$valueGid', '$coordinates', '$cor_p', '$centroid', '$valuePop')");
 			}
 		}
-
 	    //$f_d = str_replace('"', '', str_replace(']', '', str_replace('[', '', $cor_d)));	
 	}	
 	mysqli_close($con);
