@@ -18,15 +18,12 @@ include_once 'admin-upload-to-database.php';
            
       if(empty($errors)==true){
          move_uploaded_file($file_tmp,"kml-upload/".$file_name);
-		 upload($file_name);
-         echo "Success";
-   		header("Location: admin-control.php");
-
+		   upload($file_name);
+         header("Location: admin-control.php");
       }else{
          print_r($errors);
       }
    }
-   
 ?>
 <html>
    <body>
