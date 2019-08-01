@@ -1,15 +1,46 @@
 <?php
-	function simulation($time,$center)
-	{
+
 		include_once 'db_connect.php';
 
-		$NumPark = $con->query("SELECT Num_Par FROM simulation WHERE Center = '$center'");
-		$Population = $con->query("SELECT population FROM map WHERE");
-		$Centroid = $con->query("SELECT central FROM map WHERE");
-		$Kamp = $con->query("SELECT Kamp FROM simulation WHERE Center = '$center'");
-		$PolygonId =
+		$time=$_POST['time'];
+		$id=$_POST['id'];
+		$NumPark = 70;
+		$tmpPopulation = $con->query("SELECT population FROM map WHERE id = '$id'");
+		$Population = 0;
+		 while($row = $tmpPopulation->fetch_assoc()) 
+		 {
+		 	$Population=$row['population'];
+		 }
+		//$Population = rand(0,330);
 		$NeighPark = $Population * 0.2;
-		$FreePark = $NumPark - $NeighPark; 
+		$FreePark = floor($NumPark - $NeighPark);
+
+		// euresi posostou apo kampili zitisis
+		$csvData = file_get_contents('default.csv');
+		$lines = explode(PHP_EOL, $csvData);
+		$array = array();
+		foreach ($lines as $line) {
+		    $array[] = str_getcsv($line);
+		}
+		//////////////////////////////////////////
+
+		// apomonosi mono wras
+		if ($time[0]==0)
+		{
+			$time = $time[1];
+		}
+		elseif ($time[0]==1)
+		{
+			$time = 10+$time[1];
+		}
+		elseif ($time[0]==2)
+		{
+			$time = 20+$time[1];
+		}
+		//////////////////////////////////////////
+
+		$kampPercent = $array[$time][1] * $FreePark;
+		$FreePark = floor($FreePark - $kampPercent);
 
 		if ($NeighPark >= $NumPark)
 		{
@@ -17,7 +48,7 @@
 			$NeighPark = $NumPark;
 		}
 
-		$PercNeighPark = $NeighPark/$NumPark;
+		$PercNeighPark = 1 - ($FreePark/$NumPark);
 
 		if ($PercNeighPark <= 0.59)
 		{
@@ -31,11 +62,5 @@
 		{
 			$Color = "Red";
 		}
-
-		$TmpResult=array($PolygonId,$Centroid,$PercNeighPark); 
-		$Result = json_encode($TmpResult);
-
-		return $Result;
-	}
-
+		echo $Color;
 ?>

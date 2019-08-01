@@ -40,8 +40,16 @@
                     </ul>
                 </li>
                 
-                <li>
-                    <a href="#">Εκτέλεση Εξομοίωσης</a>
+                <li class="dropdown">
+                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">Εκτέλεση Εξομοίωσης <span class="carret"></span>
+                     </a>
+                    <ul class="dropdown-menu dropdown-menu-right">
+                        <li>
+                            <label>Time</label>
+                            <input type="time" name="time" placeholder="Select Time" id="time"/>
+                            <button name="uploadtime" type="button" class="btn btn-primary" onclick="simulation(0)">Submit</button>
+                        </li>
+                    </ul>
                 </li>
             </ul>
         </div>
@@ -96,12 +104,7 @@
                                     +   '<input type="file" name="csvfile" id="csvfile" accept=".csv">'
                                 + '</div> <button name="upload" type="submit" class="btn btn-primary">Submit</button>'
                         + '</form>'
-                        + '<li>'
-                        +   '<p>Εκτέλεση Εξομοίωσης.</p>'
-                        + '</li>'
-                            + '<label>Time</label>'
-                            + '<input type="time" name="time" placeholder="Select Time" id="time"/>'
-                            + '<button name="uploadtime" type="submit" class="btn btn-primary" onclick="simulation()">Submit</button>');
+                        );
 
         poly.on('click', function(e){
           var coord = e.latlng;
@@ -110,26 +113,33 @@
           document.getElementById('coordy').value = poly.getBounds().getCenter();
         });
 
-        function simulation()
+        function simulation(k)
         {
+            var k = k + 1;
             var time = document.getElementById('time').value;
-            var center = poly.getBounds().getCenter();
+            var coors = polygonArray[k];
+            
+            var args = "id="+k+"&time="+time;
+            var xmlhttp = new XMLHttpRequest();
 
-            jQuery.ajax({
-                type: "POST",
-                url: 'simulation.php',
-                dataType: 'json',
-                data: {functionname: 'simulation', arguments: [time, center]},
+            xmlhttp.onreadystatechange = function() 
+            {
+                if (this.readyState == 4 && this.status == 200)
+                {
+                    if (polygonArray[k] == null)
+                    {
+                        return 0;
+                    }
+                    var color = this.responseText;
+                    console.log(color);
+                    var poly = L.polygon(coors, {color :color, fillColor: color}).addTo(map);
 
-                success: function (obj, textstatus) {
-                              if( !('error' in obj) ) {
-                                  yourVariable = obj.result;
-                              }
-                              else {
-                                  console.log(obj.error);
-                              }
+                    simulation(k);
                 }
-            });
+            };
+            xmlhttp.open("POST", "simulation.php", true);
+            xmlhttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+            xmlhttp.send(args);
         }
         </script>
                     </body>

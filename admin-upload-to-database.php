@@ -42,36 +42,12 @@ function upload($name)
 		$centoid_y = $sum_y / $arrayLength; // y gia to kentroides
 		$centroid = "$centoid_x"." , "."$centoid_y";
 		///////////////////////////////////		
-		
-		
+
 		$population = $placemarks[$i]->description;
-		?>
-		<script>
-			var descValuePop = 0;
-			var descValueGid = 0;
-			var descType = document.getElementsByClassName("atr-name")[<?php echo $i ?>].innerHTML;
-			console.log(descType);
-
-			if (descType=="Population")
-			{
-				var descValuePop = document.getElementsByClassName("atr-value")[<?php echo $i ?>].innerHTML;
-				console.log(descValuePop);
-			}
-			
-			if (descType=="gid")
-			{
-				var descValueGid = document.getElementsByClassName("atr-value")[<?php echo $i ?>].innerHTML;
-				console.log(descValueGid);
-			}
-
-		</script>
-
-		<?php
-		   $typePop = "<script>document.writeln(descType);</script>";
-		   $valuePop = "<script>document.writeln(descValuePop);</script>";
-		   $valueGid = "<script>document.writeln(descValueGid);</script>";
+		$tmp1 = explode('Population</span>:</strong> <span class="atr-value">', $population);
+		$tmp3 = explode('</span></li></ul> ', $tmp1[1]);
+		$tmp4 = (int)$tmp3[0];
 		
-
 		if (isset($placemarks[$i]->MultiGeometry->Polygon->outerBoundaryIs->LinearRing->coordinates))
 		{
 			$cor_p = '';
@@ -96,37 +72,14 @@ function upload($name)
 					$cor_p.= ','.'['.$tmp[0].','.$tmp[1].']';
 				}	
 			}
-			$con->query("INSERT INTO map (name, coordinates, central, population) VALUES ('$coordinates', '$cor_p', '$centroid', '$population')");
+	$con->query("INSERT INTO map (name, coordinates, central, population) VALUES ('$coordinates', '$cor_p', '$centroid', '$tmp4')");
 		}
 		for ($j = 0; $j < sizeof($polygons); $j++)
 		{
 			$population = $placemarks[$i]->description;
-			?>
-			<script>
-				var descValuePop = 0;
-				var descValueGid = 0;
-				var descType = document.getElementsByClassName("atr-name")[<?php echo $i ?>].innerHTML;
-				console.log(descType);
-
-				if (descType=="Population")
-				{
-					var descValuePop = document.getElementsByClassName("atr-value")[<?php echo $i ?>].innerHTML;
-					console.log(descValuePop);
-				}
-				
-				if (descType=="gid")
-				{
-					var descValueGid = document.getElementsByClassName("atr-value")[<?php echo $i ?>].innerHTML;
-					console.log(descValueGid);
-				}
-
-			</script>
-
-			<?php
-			   $typePop = "<script>document.writeln(descType);</script>";
-			   $valuePop = "<script>document.writeln(descValuePop);</script>";
-			   $valueGid = "<script>document.writeln(descValueGid);</script>";
-			   echo $typePop, " ", $valuePop, $valueGid;
+			$tmp1 = explode('Population</span>:</strong> <span class="atr-value">', $population);
+			$tmp3 = explode('</span></li></ul> ', $tmp1[1]);
+			$tmp4 = (int)$tmp3[0];
 			if (isset($polygons[$j]->Polygon->outerBoundaryIs->LinearRing->coordinates))
 			{
 				
@@ -180,10 +133,9 @@ function upload($name)
 						$cor_p.= ','.'['.$tmp[0].','.$tmp[1].']';
 					}	
 				}
-			$con->query("INSERT INTO map (id, name, coordinates, central, population) VALUES ('$valueGid', '$coordinates', '$cor_p', '$centroid', '$valuePop')");
+			$con->query("INSERT INTO map (id, name, coordinates, central, population) VALUES ('$valueGid', '$coordinates', '$cor_p', '$centroid', '$tmp4')");
 			}
 		}
-	    //$f_d = str_replace('"', '', str_replace(']', '', str_replace('[', '', $cor_d)));	
 	}	
 	mysqli_close($con);
 }
