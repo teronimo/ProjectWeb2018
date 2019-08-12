@@ -84,7 +84,7 @@
                                 +'</div>'
                                 + '<div class="form-group">'
                                 + '<label>Distance</label>'
-                                +'<input type="number" name="distance" min="1" max="5"/>'
+                                +'<input type="number" name="distanceg" id="distanceg" placeholder="Meters" min="1" max="1000"/>'
                                 +'</div><button name="uploadtime" type="button" class="btn btn-primary" onclick="simulationGuest()" >Submit</button>');
 
                             poly.on('click', function(e)
@@ -96,9 +96,11 @@
                             function simulationGuest()
                             {
                                 var counter;
+                                var distance = parseInt(document.getElementById('distanceg').value);
                                 var coordsim = coordSimPub[coordSimPub.length-1];
 
-                                console.log(coordsim);
+                                var cir = L.circle(coordsim, {radius: distance}).addTo(map);
+
                                 for (var i = 0; i < poly.getLatLngs().length; i = i + 1)
                                 {
                                     if(pointInPolygon(poly.getLatLngs()[i], coordsim))
@@ -107,12 +109,62 @@
                                         recolor(i);
                                     }
                                 }
+                                pointInCircle(cir);
+                            }
+
+                            function pointInCircle(cir) 
+                            {
+                                <?php
+                                    include'db_connect.php';
+                                    if($centroids = $con->query("SELECT central FROM map"))
+                                        {
+                                            ?>
+                                            var centroidArray = [];
+                                            <?php 
+                                            while ($row = $centroids->fetch_object())
+                                            {
+                                                ?>
+                                                centroidArray.push([<?php echo $row->central ?>]);
+                                                <?php
+                                            }               
+                                        } 
+                                ?>
+                                var centroidsIn = [];
+
+                                var theCenterPt = cir.getLatLng();
+                                var theCenterPtX = toRadian(theCenterPt.lat);
+                                var theCenterPtY = toRadian(theCenterPt.lng);
+
+                                var theRadius = cir.getRadius();
+
+                                for (var i = 0; i < centroidArray.length; i = i + 1)
+                                {
+                                    var x = toRadian(centroidArray[i][0]);
+                                    var y = toRadian(centroidArray[i][1]);
+
+                                    var a = theCenterPtX - x;
+                                    var b = theCenterPtY - y;
+
+                                    var a1 = Math.pow(Math.sin(a/2), 2) + Math.cos(theCenterPtY) * Math.cos(y) * Math.pow(Math.sin(b/2), 2);
+                                    var c = 2 * Math.asin(Math.sqrt(a1));
+                                    var EARTH_RADIUS = 6371;
+                                    var distance_from_centroidPoint = c * EARTH_RADIUS * 1000;
+
+                                    if (distance_from_centroidPoint <= theRadius)
+                                    {
+                                        centroidsIn.push(centroidArray[i]);
+                                    }
+                                }
+                            }
+
+                            function toRadian(degree) 
+                            {
+                                return degree*Math.PI/180;
                             }
                             
                             function recolor(l)
                             {
                                 var time = document.getElementById('timeguest').value;
-                                console.log(time,l);
                                 var coors = polygonArray[l];
                                 
                                 var args = "id="+l+"&time="+time;
