@@ -9,8 +9,6 @@
     <meta name="author" content="">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.3.4/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.3.4/dist/leaflet.js"></script>
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.3.4/dist/leaflet.css" />
-    <script src="https://unpkg.com/leaflet@1.3.4/dist/leaflet.js"></script>
     <title>Project Web 2018</title>
 
     <!-- Bootstrap core CSS -->
@@ -64,13 +62,13 @@
             <div id="map">
                 <html>
                     <body>
-                     <div id="map" style="width: 1004px; height: 590px"></div>
+                     <div id="map" style="width: 1004px; height: 900px"></div>
          <script type="text/javascript"> 
          var map = new L.Map('map');
          var osmUrl = 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
          osmAttrib = 'Map data &copy; 2011 OpenStreetMap contributors',
          osm = new L.TileLayer(osmUrl, {maxZoom: 18, attribution: osmAttrib});
-         map.setView(new L.LatLng(22.9340045, 40.6430126), 16).addLayer(osm);
+         map.setView(new L.LatLng(40.6430126,22.9340045 ), 16).addLayer(osm);
          var popup = new L.Popup();
 
         <?php
