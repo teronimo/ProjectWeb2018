@@ -6,10 +6,19 @@
 		$id=$_POST['id'];
 		$NumPark = 70;
 		$tmpPopulation = $con->query("SELECT population FROM map WHERE id = '$id'");
+		$tmpCentroid = $con->query("SELECT central FROM map WHERE id = '$id'");
+
 		$Population = 0;
-		 while($row = $tmpPopulation->fetch_assoc()) 
+		$Centroid;
+
+		 while($row1 = $tmpPopulation->fetch_assoc()) 
 		 {
-		 	$Population=$row['population'];
+		 	$Population=$row1['population'];
+		 }
+
+		 while($row2 = $tmpCentroid->fetch_assoc()) 
+		 {
+		 	$Centroid=$row2['central'];
 		 }
 		//$Population = rand(0,330);
 		$NeighPark = $Population * 0.2;
@@ -62,5 +71,13 @@
 		{
 			$Color = "Red";
 		}
-		echo $Color;
+
+		$return_arr[] = array("Color" => $Color,
+                    "id" => $id,
+                    "centroid" => $Centroid,
+                    "percentage" => $PercNeighPark);
+
+		echo json_encode($return_arr);
+
+		//echo $Color;
 ?>
