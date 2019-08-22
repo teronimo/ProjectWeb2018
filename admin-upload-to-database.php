@@ -53,7 +53,7 @@ function upload($name)
 			}
 			$centoid_x = $sum_x / $arrayLength; // x gia to kentroides
 			$centoid_y = $sum_y / $arrayLength; // y gia to kentroides
-			$centroid = "$centoid_x"." , "."$centoid_y";
+			$centroid = "$centoid_y"." , "."$centoid_x";			
 			///////////////////////////////////		
 			$cor_p = '';
 			$l=0; //vlepo se poia x,y vriskomai gia na ta xorisw me komma
@@ -63,17 +63,17 @@ function upload($name)
 				$tmp = explode(',',$value);
 				if ($l==0)
 				{
-					$cor_p.= '['.$tmp[0].','.$tmp[1].']'.',';
+					$cor_p.= '['.$tmp[1].','.$tmp[0].']'.',';
 					$l=$l+1;
 				}
 				else if($l==1)
 				{
-					$cor_p.='['.$tmp[0].','.$tmp[1].']';
+					$cor_p.='['.$tmp[1].','.$tmp[0].']';
 					$l=$l+1;
 				}
 				else if ($l>1)
 				{
-					$cor_p.= ','.'['.$tmp[0].','.$tmp[1].']';
+					$cor_p.= ','.'['.$tmp[1].','.$tmp[0].']';
 				}	
 			}
 	$con->query("INSERT INTO map (name, coordinates, central, population) VALUES ('$coordinates', '$cor_p', '$centroid', '$tmp4')");
