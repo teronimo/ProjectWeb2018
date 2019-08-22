@@ -56,7 +56,7 @@
                          var osmUrl = 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
                          osmAttrib = 'Map data &copy; 2011 OpenStreetMap contributors',
                          osm = new L.TileLayer(osmUrl, {maxZoom: 18, attribution: osmAttrib});
-                          map.setView(new L.LatLng(40.6430126, 22.9340045), 16).addLayer(osm);
+                          map.setView(new L.LatLng(22.9340045, 40.6430126), 16).addLayer(osm);
                          var popup = new L.Popup();
                         
                         <?php
@@ -91,10 +91,8 @@
                             {
                                 var coord = e.latlng;
                                 coordSimPub.push(coord);
-								
                             });
-							
-							
+
                             function simulationGuest()
                             {
                                 var counter;
