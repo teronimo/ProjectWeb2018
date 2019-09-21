@@ -62,13 +62,13 @@
             <div id="map">
                 <html>
                     <body>
-                     <div id="map" style="width: 1004px; height: 900px"></div>
+                     <div id="map" style="width: 1004px; height: 820px"></div>
          <script type="text/javascript"> 
          var map = new L.Map('map');
          var osmUrl = 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
          osmAttrib = 'Map data &copy; 2011 OpenStreetMap contributors',
-         osm = new L.TileLayer(osmUrl, {maxZoom: 18, attribution: osmAttrib});
-         map.setView(new L.LatLng(40.6430126,22.9340045 ), 16).addLayer(osm);
+         osm = new L.TileLayer(osmUrl, {maxZoom: 14, attribution: osmAttrib});
+         map.setView(new L.LatLng(40.6430126,22.9340045), 16).addLayer(osm);
          var popup = new L.Popup();
 
         <?php
@@ -104,12 +104,13 @@
                         + '</form>'
                         );
 
-        poly.on('click', function(e){
-          var coord = e.latlng;
-          var lat = coord.lat;
-          var lng = coord.lng;        
-          document.getElementById('coordy').value = poly.getBounds().getCenter();
+        poly.on('click', function(e)
+        {
+            var coord = e.latlng;
+     
+            document.getElementById('coordy').value = coord;
         });
+
 
         function simulation(k)
         {
@@ -128,10 +129,14 @@
                     {
                         return 0;
                     }
-                    var color = this.responseText;
-                    console.log(color);
-                    var poly = L.polygon(coors, {color :color, fillColor: color}).addTo(map);
 
+                    var data = this.responseText;
+                    var obj = JSON.parse(data);
+
+                    var color = obj[0].Color;
+                    
+                    var poly = L.polygon(coors, {color :color, fillColor: color}).addTo(map);
+                    console.log(obj);
                     simulation(k);
                 }
             };
