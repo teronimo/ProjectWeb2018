@@ -4,12 +4,17 @@
 
 		$time=$_POST['time'];
 		$id=$_POST['id'];
-		$NumPark = 70;
 		$tmpPopulation = $con->query("SELECT population FROM map WHERE id = '$id'");
 		$tmpCentroid = $con->query("SELECT central FROM map WHERE id = '$id'");
+		$tmpNumPark = $con->query("SELECT Num_Par FROM simulation WHERE id = '$id'") or die($con->error);
+		$tmpKamp = $con->query("SELECT Kamp FROM simulation WHERE id = '$id'") or die($con->error);
 
-		$Population = 0;
+
+		$Population;
 		$Centroid;
+		$arrNumPark;
+		$csvName;
+		$arrCsvName;
 
 		 while($row1 = $tmpPopulation->fetch_assoc()) 
 		 {
@@ -20,12 +25,40 @@
 		 {
 		 	$Centroid=$row2['central'];
 		 }
-		//$Population = rand(0,330);
+
+		 while($row3 = $tmpNumPark->fetch_assoc()) 
+		 {
+		 	$arrNumPark=$row3['Num_Par'];
+		 }
+
+		 while($row4 = $tmpKamp->fetch_assoc()) 
+		 {
+		 	$arrCsvName=$row4['Kamp'];
+		 }
+
+		if (!isset($arrNumPark))
+		{
+			$NumPark = 70;
+		}
+		else
+		{
+			$NumPark = $arrNumPark;
+		}
+
+		if (!isset($arrCsvName))
+		{
+			$csvName = 'default.csv';
+		}
+		else
+		{
+			$csvName = $arrCsvName;
+		}
+
 		$NeighPark = $Population * 0.2;
 		$FreePark = floor($NumPark - $NeighPark);
 
 		// euresi posostou apo kampili zitisis
-		$csvData = file_get_contents('default.csv');
+		$csvData = file_get_contents($csvName);
 		$lines = explode(PHP_EOL, $csvData);
 		$array = array();
 		foreach ($lines as $line) {
