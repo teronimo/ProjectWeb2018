@@ -67,8 +67,8 @@
          var map = new L.Map('map');
          var osmUrl = 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
          osmAttrib = 'Map data &copy; 2011 OpenStreetMap contributors',
-         osm = new L.TileLayer(osmUrl, {maxZoom: 14, attribution: osmAttrib});
-         map.setView(new L.LatLng(40.6430126,22.9340045), 16).addLayer(osm);
+         osm = new L.TileLayer(osmUrl, {maxZoom: 18, attribution: osmAttrib});
+         map.setView(new L.LatLng(40.6430126,22.9340045), 14).addLayer(osm);
          var popup = new L.Popup();
 
         <?php
@@ -94,7 +94,7 @@
                         + '<form id="Park_Number" method="POST" action="park-csv-upload.php" enctype="multipart/form-data">'
                             + '<div class="form-group">'
                                     + '<label>Polygon Name</label>'
-                                    + '<input type="text" name="coordy" placeholder="Auto Complete" id="coordy"/>'
+                                    + '<input type="text" name="nameOfPolygon" placeholder="Auto Complete" id="nameOfPolygon"/>'
                                     + '<label>Number_of_parkings</label>'
                                     +   '<input type="number" name="Park_Number" placeholder="Park_Number">' 
                                     +   '<br />' 
@@ -107,8 +107,14 @@
         poly.on('click', function(e)
         {
             var coord = e.latlng;
-     
-            document.getElementById('coordy').value = coord;
+            for (var i = 0; i < poly.getLatLngs().length; i = i + 1)
+            {
+                if(pointInPolygonA(poly.getLatLngs()[i], coord))
+                {
+                    document.getElementById('nameOfPolygon').value = i;
+                    break;
+                }
+            }
         });
 
 
@@ -131,7 +137,8 @@
                     }
 
                     var data = this.responseText;
-                    var obj = JSON.parse(data);
+
+                   var obj = JSON.parse(data);
 
                     var color = obj[0].Color;
                     
@@ -143,6 +150,31 @@
             xmlhttp.open("POST", "simulation.php", true);
             xmlhttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
             xmlhttp.send(args);
+        }
+
+        function pointInPolygonA(polygonPath, coordinates) 
+        {
+            let numberOfVertexs = polygonPath.length - 1;
+            let inPoly = false;
+
+            let lastVertex = polygonPath[numberOfVertexs];
+            let vertex1, vertex2;
+
+            let x = coordinates.lat, y = coordinates.lng;
+
+            let inside = false;
+            
+            for (var i = 0, j = polygonPath.length - 1; i < polygonPath.length; j = i++) 
+            {
+                let xi = polygonPath[i].lat, yi = polygonPath[i].lng;
+                let xj = polygonPath[j].lat, yj = polygonPath[j].lng;
+
+                let intersect = ((yi > y) != (yj > y))
+                    && (x < (xj - xi) * (y - yi) / (yj - yi) + xi);
+                if (intersect) inside = !inside;
+            }
+
+            return inside;
         }
         </script>
                     </body>
