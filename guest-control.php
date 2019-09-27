@@ -17,6 +17,7 @@
     <link href="css/simple-sidebar.css" rel="stylesheet">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.3.4/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.3.4/dist/leaflet.js"></script>
+    <script type="text/javascript" src="js/jDBSCAN.js"></script>
 
 </head>
 
@@ -56,8 +57,17 @@
                          var osmUrl = 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
                          osmAttrib = 'Map data &copy; 2011 OpenStreetMap contributors',
                          osm = new L.TileLayer(osmUrl, {maxZoom: 18, attribution: osmAttrib});
-                          map.setView(new L.LatLng(22.9340045, 40.6430126), 16).addLayer(osm);
+                          map.setView(new L.LatLng(40.6430126,22.9340045), 14).addLayer(osm);
                          var popup = new L.Popup();
+
+                         var greenIcon = new L.Icon({
+                            iconUrl: 'img/marker-icon-2x-green.png',
+                            shadowUrl: 'img/marker-shadow.png',
+                            iconSize: [25, 41],
+                            iconAnchor: [12, 41],
+                            popupAnchor: [1, -34],
+                            shadowSize: [41, 41]
+                        });
                         
                         <?php
                             include'db_connect.php';
@@ -95,24 +105,16 @@
 
                             function simulationGuest()
                             {
-                                var counter;
                                 var distance = parseInt(document.getElementById('distanceg').value);
                                 var coordsim = coordSimPub[coordSimPub.length-1];
+                                var line =[];
 
                                 var cir = L.circle(coordsim, {radius: distance}).addTo(map);
 
-                                for (var i = 0; i < poly.getLatLngs().length; i = i + 1)
-                                {
-                                    if(pointInPolygon(poly.getLatLngs()[i], coordsim))
-                                    {
-                                        counter = i;
-                                        recolor(i);
-                                    }
-                                }
-                                pointInCircle(cir);
+                                pointInCircle(cir, coordsim, distance, line);
                             }
 
-                            function pointInCircle(cir) 
+                            function pointInCircle(cir, coordsim, distance, line) 
                             {
                                 <?php
                                     include'db_connect.php';
@@ -130,6 +132,7 @@
                                         } 
                                 ?>
                                 var centroidsIn = [];
+                                var point_data=[];
 
                                 var theCenterPt = cir.getLatLng();
                                 var theCenterPtX = toRadian(theCenterPt.lat);
@@ -153,6 +156,7 @@
                                     if (distance_from_centroidPoint <= theRadius)
                                     {
                                         centroidsIn.push(centroidArray[i]);
+                                        destination(i, distance, centroidArray[i], point_data, coordsim, line);
                                     }
                                 }
                             }
@@ -161,8 +165,9 @@
                             {
                                 return degree*Math.PI/180;
                             }
+
                             
-                            function recolor(l)
+                            function destination(l, distance, centroidArray, point_data, coordsim, line)
                             {
                                 var time = document.getElementById('timeguest').value;
                                 var coors = polygonArray[l];
@@ -177,16 +182,47 @@
                                         var data = this.responseText;
                                         var obj = JSON.parse(data);
 
-                                        var color = obj[0].Color;
-                                        
-                                        var poly = L.polygon(coors, {color :color, fillColor: color}).addTo(map);
-                                        console.log(obj);
+                                        var parkNum = obj[0].freePark;
+                                        var centerX = centroidArray[0];
+                                        var centerY = centroidArray[1];
+                                        var rd = 50/111300;
+
+                                        for (var i = 0; i < parkNum; i = i + 1)
+                                        {
+                                            var u = Math.random();
+                                            var v = Math.random();
+                                            var w = rd * Math.sqrt(u);
+                                            var t = 2 * Math.PI * v;
+                                            var x = w * Math.cos(t);
+                                            var y = centerY + w * Math.sin(t);
+                                            var xp = centerX+ x/Math.cos(centerY);
+                                            point_data.push({x: xp, y: y});
+                                        }
+                                        // Configure a DBSCAN instance.
+                                        var dbscanner = jDBSCAN().eps(0.075).minPts(1).distance('EUCLIDEAN').data(point_data);
+
+                                        // This will return the assignment of each point to a cluster number, 
+                                        // points which have  -1 as assigned cluster number are noise.
+                                        var point_assignment_result = dbscanner();
+                                        var cluster_centers = dbscanner.getClusters();
+
+                                        var tmpCluster=[];
+                                        tmpCluster.push(cluster_centers[0]["x"], cluster_centers[0]["y"]);
+                                        var markerCluster = L.marker(tmpCluster).addTo(map);
+                                        var markerClick = L.marker(coordsim, {icon: greenIcon}).addTo(map);
+
+                                        var latlngs = Array();
+
+                                        latlngs.push(markerClick.getLatLng());
+                                        latlngs.push(markerCluster.getLatLng());
+                                        var polyline = L.polyline(latlngs, {color: 'red'}).addTo(map);
+
+                                        console.log(parkNum, cluster_centers);
                                     }
                                 };
                                 xmlhttp.open("POST", "simulation.php", true);
                                 xmlhttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
                                 xmlhttp.send(args);
-
                             }
 
                             function pointInPolygon(polygonPath, coordinates) 

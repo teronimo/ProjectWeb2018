@@ -108,7 +108,8 @@
 		$return_arr[] = array("Color" => $Color,
                     "id" => $id,
                     "centroid" => $Centroid,
-                    "percentage" => $PercNeighPark);
+                    "percentage" => $PercNeighPark,
+                	"freePark" => $FreePark);
 
 		echo json_encode($return_arr);
 
