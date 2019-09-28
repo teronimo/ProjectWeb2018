@@ -1,18 +1,25 @@
 <?php
+include_once 'db_connect.php';
 if(isset($_POST['upload']))
 {
-	include_once 'db_connect.php';
-
 	$ParkNumber = $_POST['Park_Number'];
-	$Center = $_POST['coordy'];
+	$id = $_POST['nameOfPolygon'];
 	$fileName = $_FILES['csvfile']['name'];
+	$ask;
 
-
-	$csv= file_get_contents($fileName);
+	/*$csv= file_get_contents($fileName);
 	$array = array_map("str_getcsv", explode("\n", $csv));
+	$ask = json_encode($csv);*/
+	$csvData = file_get_contents($fileName);
+	$lines = explode(PHP_EOL, $csvData);
+	$array = array();
+	foreach ($lines as $line) {
+	    $array[] = str_getcsv($line);
+	}
 	$ask = json_encode($array);
-    $con->query("INSERT INTO simulation (Num_Par,Kamp,Center) VALUES ('$ParkNumber','$ask','$Center')");
+	print_r($array[14][1]);
+    $con->query("INSERT INTO simulation (id, Num_Par, Kamp) VALUES ('$id', '$ParkNumber', '$fileName')");
 }
-
-header("Location: map-admin.php");
+//echo $ask;
+header("Location: admin-control.php");
 ?>
