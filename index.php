@@ -5,11 +5,12 @@ session_start();
 <!DOCTYPE html>
 <html>
 	<head>
-
+	
 		<meta charset="utf-8">
-		<link href="css/login-form.css" rel="stylesheet" type="text/css">
+		<link rel="stylesheet" type="text/css" href="css/loginform.css" >
 		
   	</head>
+  	
 
 	
 	<body id="LoginForm">
@@ -17,6 +18,7 @@ session_start();
 	<div class="login-form">
 	<div class="main-div">
 	    <div class="panel">
+	   
 	   <h2>Admin Login</h2>
 	   <p>Please enter your username and password</p>
 	   </div>
@@ -24,14 +26,14 @@ session_start();
 
 	        <div class="form-group">
 
-
-	            <input type="text" class="form-control" name="Username" placeholder="Username">
+	        	<h2>Username</h2>
+	            <input type="text" class="form-control" name="Username" placeholder="Enter Username">
 
 	        </div>
 
 	        <div class="form-group">
-
-	            <input type="password" class="form-control" name="Password" placeholder="Password">
+	        	<h2>Password</h2>
+	            <input type="password" class="form-control" name="Password" placeholder="Enter Password">
 
 	        </div>
 	       
