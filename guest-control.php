@@ -249,13 +249,13 @@
                                 return inside;
                             }
 
-                            /*window.onload = function() {
+                            window.onload = function() {
 
                                 var today = new Date();
                                 var time = today.getHours();
 
                                 simulationGuestOnload(0, time);
-                            };*/
+                            };
 
                             function simulationGuestOnload(k, timeg)
                             {
@@ -286,6 +286,15 @@
                                         var color = obj[0].Color;
                                         
                                         var poly = L.polygon(coors, {color :color, fillColor: color}).addTo(map);
+										 poly.bindPopup('<p>Επιλέξτε επιθυμητή ώρα και μέγιστη απόσταση από την συγκεκριμένη τοποθεσία.</p>'
+														+ '<div class="form-group">'
+														+ '<label>Time of simulation</label>'
+														+'<input type="time" name="timeguest" placeholder="Select Time" id="timeguest"/>'
+														+'</div>'
+														+ '<div class="form-group">'
+														+ '<label>Distance</label>'
+														+'<input type="number" name="distanceg" id="distanceg" placeholder="Meters" min="1" max="1000"/>'
+														+'</div><button name="uploadtime" type="button" class="btn btn-primary" onclick="simulationGuest()" >Submit</button>');
                                         console.log(obj);
                                         simulationGuestOnload(k, timeg);
                                     }
