@@ -143,6 +143,21 @@
                     var color = obj[0].Color;
                     
                     var poly = L.polygon(coors, {color :color, fillColor: color}).addTo(map);
+					
+					poly.bindPopup('<p>Πληκτρολογίστε το πλήθος των διαθέσιμων θέσων στάθμευσης, καθώς επίσης και την καμπύλη ζήτησής του τετραγώνου.</p>'
+                        + '<form id="Park_Number" method="POST" action="park-csv-upload.php" enctype="multipart/form-data">'
+                            + '<div class="form-group">'
+                                    + '<label>Polygon Name</label>'
+                                    + '<input type="text" name="nameOfPolygon" placeholder="Auto Complete" id="nameOfPolygon"/>'
+                                    + '<label>Number_of_parkings</label>'
+                                    +   '<input type="number" name="Park_Number" placeholder="Park_Number">' 
+                                    +   '<br />' 
+                                    + '<label>Choose CSV File</label>'
+                                    +   '<input type="file" name="csvfile" id="csvfile" accept=".csv">'
+                                + '</div> <button name="upload" type="submit" class="btn btn-primary">Submit</button>'
+                        + '</form>'
+                        );
+						
                     console.log(obj);
                     simulation(k);
                 }
