@@ -22,7 +22,7 @@ body {
   height: 100%;
   margin-left: -250px;
   overflow-y: auto;
-  background: #000;
+  background: #D3D3D3;
   -webkit-transition: all 0.5s ease;
   -moz-transition: all 0.5s ease;
   -o-transition: all 0.5s ease;
@@ -64,13 +64,13 @@ body {
 .sidebar-nav li a {
   display: block;
   text-decoration: none;
-  color: #999999;
+  color:#000000;
 }
 
 .sidebar-nav li a:hover {
   text-decoration: none;
-  color: #fff;
-  background: rgba(255, 255, 255, 0.2);
+  color:#000000;
+  background: rgba(255, 255, 255, 0.8);
 }
 
 .sidebar-nav li a:active, .sidebar-nav li a:focus {
@@ -84,11 +84,11 @@ body {
 }
 
 .sidebar-nav>.sidebar-brand a {
-  color: #999999;
+  color: #000000;
 }
 
 .sidebar-nav>.sidebar-brand a:hover {
-  color: #fff;
+  color: #000000;
   background: none;
 }
 
